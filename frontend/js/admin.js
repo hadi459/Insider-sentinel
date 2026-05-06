@@ -3,6 +3,16 @@
  * Admin-specific logic: employee list, monitoring, risk display.
  */
 
+/** Escape HTML special characters to prevent XSS. */
+function escAdminHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ============================================================
    Admin Dashboard
    ============================================================ */
@@ -52,14 +62,14 @@ const AdminDashboard = {
       <tr>
         <td>
           <div style="display:flex;align-items:center;gap:.6rem">
-            <div class="avatar" style="background:var(--navy)">${(emp.name || 'U')[0].toUpperCase()}</div>
+            <div class="avatar" style="background:var(--navy)">${escAdminHtml((emp.name || 'U')[0].toUpperCase())}</div>
             <div>
-              <div style="font-weight:600;color:var(--text-primary)">${emp.name}</div>
-              <div style="font-size:.8rem;color:var(--text-muted)">${emp.email}</div>
+              <div style="font-weight:600;color:var(--text-primary)">${escAdminHtml(emp.name)}</div>
+              <div style="font-size:.8rem;color:var(--text-muted)">${escAdminHtml(emp.email)}</div>
             </div>
           </div>
         </td>
-        <td>${emp.department || '—'}</td>
+        <td>${escAdminHtml(emp.department || '—')}</td>
         <td>
           <div class="risk-bar-container">
             <div class="risk-bar">
@@ -81,17 +91,29 @@ const AdminDashboard = {
         <td>
           <div class="table-actions">
             <a href="/admin/employee/${emp.user_id}" class="btn btn-sm btn-primary">View</a>
-            <button class="btn btn-sm btn-warning" onclick="AdminDashboard.forceLogout(${emp.user_id}, '${emp.name}')">
+            <button class="btn btn-sm btn-warning" data-action="logout" data-emp-id="${emp.user_id}">
               Logout
             </button>
             ${emp.is_blocked
-              ? `<button class="btn btn-sm btn-success" onclick="AdminDashboard.unblock(${emp.user_id}, '${emp.name}')">Unblock</button>`
-              : `<button class="btn btn-sm btn-danger"  onclick="AdminDashboard.block(${emp.user_id}, '${emp.name}')">Block</button>`
+              ? `<button class="btn btn-sm btn-success" data-action="unblock" data-emp-id="${emp.user_id}">Unblock</button>`
+              : `<button class="btn btn-sm btn-danger"  data-action="block"   data-emp-id="${emp.user_id}">Block</button>`
             }
           </div>
         </td>
       </tr>`).join('');
-  },
+
+    // Event delegation for action buttons — avoids interpolating names into onclick strings
+    tbody.querySelectorAll('[data-action]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const empId = parseInt(btn.dataset.empId, 10);
+        const emp = this.employees.find(e => e.user_id === empId);
+        const name = emp ? emp.name : `Employee ${empId}`;
+        const action = btn.dataset.action;
+        if (action === 'block')   this.block(empId, name);
+        if (action === 'unblock') this.unblock(empId, name);
+        if (action === 'logout')  this.forceLogout(empId, name);
+      });
+    });
 
   bindFilters() {
     const search = document.getElementById('searchInput');

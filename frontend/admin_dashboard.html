@@ -166,7 +166,16 @@
       const sidebar = document.getElementById('empSidebarLinks');
       if (sidebar) {
         employees.slice(0, 6).forEach(e => {
-          sidebar.innerHTML += `<li><a href="/admin/employee/${e.user_id}"><span class="nav-icon">👤</span> ${e.name.split(' ')[0]}</a></li>`;
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href   = `/admin/employee/${e.user_id}`;
+          const icon = document.createElement('span');
+          icon.className = 'nav-icon';
+          icon.textContent = '👤';
+          a.appendChild(icon);
+          a.appendChild(document.createTextNode(' ' + e.name.split(' ')[0]));
+          li.appendChild(a);
+          sidebar.appendChild(li);
         });
       }
     });

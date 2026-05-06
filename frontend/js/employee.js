@@ -101,13 +101,22 @@ const EmployeeDashboard = {
       return `
         <div class="task-item ${done ? 'completed' : ''}" id="task-${t.task_id}">
           <div class="task-priority ${t.priority}"></div>
-          <span class="task-title">${t.title}</span>
-          <span class="task-time">${t.priority}</span>
+          <span class="task-title">${escHtml(t.title)}</span>
+          <span class="task-time">${escHtml(t.priority)}</span>
           ${!done
-            ? `<button class="btn btn-sm btn-success" onclick="EmployeeDashboard.completeTask(${t.task_id}, '${t.title.replace(/'/g,'\\\'')}')" >✔ Done</button>`
+            ? `<button class="btn btn-sm btn-success" data-task-id="${t.task_id}">✔ Done</button>`
             : '<span class="badge badge-active">Completed</span>'}
         </div>`;
     }).join('');
+
+    // Wire up task buttons via event delegation (avoids inline onclick with user data)
+    el.querySelectorAll('[data-task-id]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tid = parseInt(btn.dataset.taskId, 10);
+        const task = this.tasks.find(t => t.task_id === tid);
+        if (task) this.completeTask(tid, task.title);
+      });
+    });
   },
 
   async completeTask(taskId, taskTitle) {
@@ -159,29 +168,33 @@ const EmployeeDashboard = {
     if (isPhishing && phishData) {
       this._phishTimestamp = Date.now();
       div.className = 'chat-message phishing';
+      const timerId = `phishTimer-${Date.now()}`;
       div.innerHTML = `
-        <div class="sender">⚠️ ${sender} <span style="font-size:.7rem;opacity:.6">${now}</span></div>
-        <div>${phishData.text}</div>
+        <div class="sender">⚠️ ${escHtml(sender)} <span style="font-size:.7rem;opacity:.6">${escHtml(now)}</span></div>
+        <div>${escHtml(phishData.text)}</div>
         <div style="margin-top:.4rem">
-          <span class="phishing-link" data-url="${phishData.url}" onclick="EmployeeDashboard.handlePhishClick(this, '${phishData.url}')">
-            🔗 ${phishData.url}
+          <span class="phishing-link" data-url="${escHtml(phishData.url)}">
+            🔗 ${escHtml(phishData.url)}
           </span>
         </div>
-        <div class="link-timer" id="phishTimer-${Date.now()}"></div>`;
+        <div class="link-timer" id="${timerId}"></div>`;
+      // Wire up click via addEventListener (safe — no inline JS with URL data)
+      const linkSpan = div.querySelector('.phishing-link');
+      linkSpan.addEventListener('click', () => EmployeeDashboard.handlePhishClick(linkSpan, phishData.url));
       // Countdown display
       let secs = 0;
-      const timerId = div.querySelector('[id^="phishTimer-"]');
+      const timerEl = div.querySelector(`#${timerId}`);
       const tick = setInterval(() => {
         secs++;
-        if (timerId) timerId.textContent = `⏱ ${secs}s since link appeared`;
+        if (timerEl) timerEl.textContent = `⏱ ${secs}s since link appeared`;
       }, 1000);
       div._timerInterval = tick;
     } else {
       const text = this.CHAT_MESSAGES[Math.floor(Math.random() * this.CHAT_MESSAGES.length)];
       div.className = 'chat-message received';
       div.innerHTML = `
-        <div class="sender">${sender} <span style="font-size:.7rem;opacity:.6">${now}</span></div>
-        <div>${text}</div>`;
+        <div class="sender">${escHtml(sender)} <span style="font-size:.7rem;opacity:.6">${escHtml(now)}</span></div>
+        <div>${escHtml(text)}</div>`;
     }
 
     el.appendChild(div);
@@ -279,7 +292,7 @@ const EmployeeDashboard = {
     div.className = 'chat-message sent';
     div.innerHTML = `
       <div class="sender">You <span style="font-size:.7rem;opacity:.6">${new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})}</span></div>
-      <div>${text}</div>`;
+      <div>${escHtml(text)}</div>`;
     el.appendChild(div);
     el.scrollTop = el.scrollHeight;
 

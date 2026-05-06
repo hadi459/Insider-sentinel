@@ -5,6 +5,7 @@ RESTful endpoints for Authentication, Admin, Employee, and System.
 from __future__ import annotations
 
 import json
+import logging
 from datetime import datetime
 from functools import wraps
 from typing import Callable, Dict, Optional, Tuple
@@ -13,6 +14,8 @@ from flask import Blueprint, jsonify, request, g
 
 from backend.monitoring_system import MonitoringSystem
 from backend.models import ActivityType, ReportGenerator
+
+log = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
 # Blueprint & shared system instance
@@ -202,6 +205,7 @@ def admin_block_employee(emp_id: int):
     try:
         get_system().block_employee(admin_id, emp_id)
     except Exception:
+        log.exception("Failed to block employee %s", emp_id)
         return _err("Failed to block employee. Please try again.")
     return _ok({"message": f"Employee {emp_id} has been blocked"})
 
