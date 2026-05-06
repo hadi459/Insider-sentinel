@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activity Log — Insider Sentinel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dark-mode.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon">🛡️</div>
+      <span class="brand-name">Insider Sentinel</span>
+    </div>
+    <div class="navbar-actions">
+      <button class="dark-mode-toggle" data-toggle-dark title="Toggle dark mode">
+        <span class="dark-mode-icon">🌙</span>
+      </button>
+      <a href="/employee" class="btn btn-sm btn-secondary">← Dashboard</a>
+      <button class="btn btn-sm btn-danger" data-logout>Logout</button>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">My Portal</div>
+    <ul class="sidebar-nav">
+      <li><a href="/employee"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="/employee/activity-log" class="active"><span class="nav-icon">📋</span> Activity Log</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" style="margin-top:64px">
+    <div class="page-header" style="margin-top:0">
+      <div class="d-flex align-center justify-between">
+        <div>
+          <h1>📋 My Activity Log</h1>
+          <p>Your personal system interaction history</p>
+        </div>
+        <button class="btn btn-success" id="exportBtn">⬇ Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <select class="form-control" id="typeFilter" style="max-width:220px">
+        <option value="">All Activity Types</option>
+        <option value="login">Login</option>
+        <option value="logout">Logout</option>
+        <option value="task_complete">Task Complete</option>
+        <option value="chat_message">Chat Message</option>
+        <option value="link_clicked">Link Clicked</option>
+        <option value="file_access">File Access</option>
+        <option value="failed_login">Failed Login</option>
+      </select>
+      <small class="text-muted" style="margin-left:.5rem">Filter by activity type</small>
+    </div>
+
+    <!-- Activity List -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">Activity Timeline</span></div>
+      <div id="activityList">
+        <div class="spinner"></div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/employee.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => EmployeeActivityLog.init());
+  </script>
+</body>
+</html>
