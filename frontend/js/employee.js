@@ -3,6 +3,16 @@
  * Employee portal: tasks, chat simulation, phishing link tracking.
  */
 
+/** Escape HTML special characters to prevent XSS. */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 /* ============================================================
    Employee Dashboard
    ============================================================ */

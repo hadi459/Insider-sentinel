@@ -134,18 +134,25 @@ class User(ABC):
 
     @staticmethod
     def hash_password(password: str) -> str:
-        """Return a bcrypt-style hash using SHA-256 + salt (lightweight)."""
-        salt = secrets.token_hex(16)
-        hashed = hashlib.sha256(f"{salt}{password}".encode()).hexdigest()
-        return f"{salt}:{hashed}"
+        """Return a PBKDF2-HMAC-SHA256 password hash with a random salt.
+
+        Uses 260 000 iterations — compliant with NIST SP 800-132 guidance.
+        Stored format: ``<hex-salt>:<hex-dk>``
+        """
+        salt = secrets.token_bytes(16)
+        dk = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 260_000)
+        return f"{salt.hex()}:{dk.hex()}"
 
     @staticmethod
     def verify_password(password: str, stored_hash: str) -> bool:
-        """Verify a plaintext password against a stored hash."""
+        """Verify a plaintext password against a stored PBKDF2 hash."""
         try:
-            salt, hashed = stored_hash.split(":", 1)
-            return hashlib.sha256(f"{salt}{password}".encode()).hexdigest() == hashed
-        except ValueError:
+            salt_hex, dk_hex = stored_hash.split(":", 1)
+            salt = bytes.fromhex(salt_hex)
+            expected = bytes.fromhex(dk_hex)
+            actual = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 260_000)
+            return secrets.compare_digest(actual, expected)
+        except (ValueError, TypeError):
             return False
 
     def to_dict(self) -> Dict:

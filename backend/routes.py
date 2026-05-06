@@ -110,10 +110,10 @@ def auth_login():
 
     try:
         session_info = get_system().authenticate(email, password)
-    except PermissionError as exc:
-        return _err(str(exc), 403)
-    except ValueError as exc:
-        return _err(str(exc), 401)
+    except PermissionError:
+        return _err("Account is suspended. Contact your administrator.", 403)
+    except ValueError:
+        return _err("Invalid email or password.", 401)
 
     return _ok(session_info)
 
@@ -201,8 +201,8 @@ def admin_block_employee(emp_id: int):
     admin_id = g.current_user["user_id"]
     try:
         get_system().block_employee(admin_id, emp_id)
-    except Exception as exc:
-        return _err(str(exc))
+    except Exception:
+        return _err("Failed to block employee. Please try again.")
     return _ok({"message": f"Employee {emp_id} has been blocked"})
 
 
@@ -213,8 +213,8 @@ def admin_unblock_employee(emp_id: int):
     admin_id = g.current_user["user_id"]
     try:
         get_system().unblock_employee(admin_id, emp_id)
-    except Exception as exc:
-        return _err(str(exc))
+    except Exception:
+        return _err("Failed to unblock employee. Please try again.")
     return _ok({"message": f"Employee {emp_id} has been unblocked"})
 
 
@@ -225,8 +225,8 @@ def admin_force_logout(emp_id: int):
     admin_id = g.current_user["user_id"]
     try:
         get_system().force_logout(admin_id, emp_id)
-    except Exception as exc:
-        return _err(str(exc))
+    except Exception:
+        return _err("Failed to force logout. Please try again.")
     return _ok({"message": f"Employee {emp_id} sessions terminated"})
 
 
@@ -258,8 +258,8 @@ def admin_reports_generate():
             employee_id=employee_id,
             department=department,
         )
-    except (ValueError, NotImplementedError) as exc:
-        return _err(str(exc))
+    except (ValueError, NotImplementedError):
+        return _err("Invalid report type or missing required parameters.")
     return _ok({"report": report_data, "generated_at": datetime.utcnow().isoformat()})
 
 
@@ -282,8 +282,8 @@ def employee_dashboard():
     user_id = g.current_user["user_id"]
     try:
         data = get_system().get_employee_dashboard(user_id)
-    except ValueError as exc:
-        return _err(str(exc), 404)
+    except ValueError:
+        return _err("Employee not found.", 404)
     return _ok(data)
 
 

@@ -133,9 +133,9 @@ def init_database(skip_if_exists: bool = False) -> None:
         print(f"  Risk calculated for {emp['name']}")
 
     print("\n✅ Database initialization complete!")
-    print(f"   Admin logins:    admin1@insider.com / {DEFAULT_PASSWORD}")
-    print(f"                    admin2@insider.com / {DEFAULT_PASSWORD}")
-    print(f"   Employee logins: emp1-emp8@company.com / {DEFAULT_PASSWORD}")
+    print("   Admin logins:    admin1@insider.com  (see DEFAULT_PASSWORD in source)")
+    print("                    admin2@insider.com  (see DEFAULT_PASSWORD in source)")
+    print("   Employee logins: emp1-emp8@company.com  (see DEFAULT_PASSWORD in source)")
 
 
 if __name__ == "__main__":
