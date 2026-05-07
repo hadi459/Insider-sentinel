@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insider Sentinel - Login</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <main class="container narrow">
+    <h1>Insider Sentinel</h1>
+    <p class="muted">Sign in to access the admin dashboard.</p>
+
+    <form id="loginForm" class="card">
+      <label for="username">Username</label>
+      <input id="username" name="username" required value="admin" />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required value="admin123" />
+
+      <button type="submit">Login</button>
+      <p class="muted small">Demo credentials: admin / admin123</p>
+    </form>
+  </main>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

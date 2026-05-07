@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insider Sentinel - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Admin Dashboard</h1>
+    <div class="topbar-right">
+      <span id="adminName"></span>
+      <button id="logoutBtn" class="btn-secondary">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="stats-grid">
+      <div class="stat-card">
+        <h3>Total Employees</h3>
+        <p id="totalEmployees">0</p>
+      </div>
+      <div class="stat-card warning">
+        <h3>High Risk</h3>
+        <p id="highRiskCount">0</p>
+      </div>
+      <div class="stat-card success">
+        <h3>Active Sessions</h3>
+        <p id="activeSessions">0</p>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Filters</h2>
+      <div class="filters">
+        <input id="searchInput" placeholder="Search employees..." />
+        <select id="filterRisk">
+          <option value="">All risk levels</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Employee Risk Table</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Department</th>
+              <th>Risk Score</th>
+              <th>Risk Level</th>
+              <th>Last Activity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employeesTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Heatmap</h2>
+      <div id="heatmapChart"></div>
+    </section>
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
