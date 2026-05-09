@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — Insider Sentinel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dark-mode.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon">🛡️</div>
+      <span class="brand-name">Insider Sentinel</span>
+    </div>
+    <div class="navbar-actions">
+      <button class="dark-mode-toggle" data-toggle-dark title="Toggle dark mode">
+        <span class="dark-mode-icon">🌙</span>
+      </button>
+      <div class="navbar-user">
+        <div class="avatar navbar-avatar">E</div>
+        <span class="navbar-user-name user-name">Employee</span>
+      </div>
+      <button class="btn btn-sm btn-danger" data-logout>Logout</button>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">My Portal</div>
+    <ul class="sidebar-nav">
+      <li><a href="/employee" class="active"><span class="nav-icon">🏠</span> Dashboard</a></li>
+      <li><a href="/employee/activity-log"><span class="nav-icon">📋</span> Activity Log</a></li>
+    </ul>
+    <div class="sidebar-section-label" style="margin-top:1.5rem">Status</div>
+    <ul class="sidebar-nav">
+      <li>
+        <a href="#" style="cursor:default">
+          <span class="nav-icon">🟢</span>
+          <span id="myRiskScore">Loading…</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" style="margin-top:64px">
+
+    <!-- Greeting -->
+    <div class="page-header" style="margin-top:0">
+      <h1 id="greeting">Hello 👋</h1>
+      <p id="empDept" class="text-muted">—</p>
+    </div>
+
+    <!-- Activity Status -->
+    <div class="activity-status">
+      <div class="dot"></div>
+      <span id="activityStatusMsg">Monitoring active — all interactions are being logged.</span>
+    </div>
+
+    <!-- Top Row: Tasks + Browser -->
+    <div class="section-grid">
+
+      <!-- Task List -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📋 My Tasks</span>
+          <small class="text-muted">Click "Done" to log completion</small>
+        </div>
+        <div id="taskList">
+          <div class="spinner"></div>
+        </div>
+      </div>
+
+      <!-- Simulated Browser -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">🌐 Internal Browser</span>
+          <span class="badge badge-active">Secure</span>
+        </div>
+        <div class="browser-widget">
+          <div class="browser-toolbar">
+            <div class="browser-dots">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot yellow"></div>
+              <div class="browser-dot green"></div>
+            </div>
+            <div class="browser-url" id="browserUrl">https://intranet.company.local</div>
+          </div>
+          <div class="browser-content" id="browserContent">
+            <h4 id="browserTitle">Company Intranet</h4>
+            <p>Loading internal portal…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">💬 Team Chat</span>
+        <span class="badge badge-medium">Monitored</span>
+      </div>
+      <div class="alert alert-warning" style="margin-bottom:1rem;padding:.6rem .9rem">
+        ⚠️ All chat activity is monitored for security compliance. Suspicious links may appear as part of security testing.
+      </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+          <input type="text" class="form-control" id="chatInput"
+                 placeholder="Type a message…"
+                 onkeydown="if(event.key==='Enter') EmployeeDashboard.sendChatMessage()">
+          <button class="btn btn-primary" onclick="EmployeeDashboard.sendChatMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/employee.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => EmployeeDashboard.init());
+  </script>
+</body>
+</html>

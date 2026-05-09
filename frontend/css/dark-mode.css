@@ -1,0 +1,153 @@
+/* ============================================================
+   Insider Sentinel — Dark Mode CSS
+   Applied when [data-theme="dark"] is set on <html> element
+   ============================================================ */
+
+[data-theme="dark"] body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .login-card,
+[data-theme="dark"] .modal,
+[data-theme="dark"] .task-item,
+[data-theme="dark"] .chat-container,
+[data-theme="dark"] .browser-widget,
+[data-theme="dark"] .browser-content {
+  background: var(--bg-card);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .navbar {
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border);
+}
+
+[data-theme="dark"] .sidebar {
+  background: var(--bg-sidebar);
+}
+
+[data-theme="dark"] thead th {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] tbody tr:hover {
+  background: rgba(255,255,255,.04);
+}
+
+[data-theme="dark"] tbody td {
+  color: var(--text-secondary);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .form-control {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: var(--info);
+  background: var(--bg-card);
+}
+
+[data-theme="dark"] .chat-input {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .chat-message.received {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .browser-toolbar {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .browser-url {
+  background: var(--bg-card);
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .login-demo-creds {
+  background: rgba(255,255,255,.05);
+  color: var(--text-muted);
+}
+
+[data-theme="dark"] .risk-bar {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .progress-bar-outer {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .timeline::before {
+  background: var(--border);
+}
+
+[data-theme="dark"] .timeline-item::before {
+  border-color: var(--bg-card);
+}
+
+[data-theme="dark"] .filter-bar .form-control {
+  background: var(--bg-secondary);
+}
+
+[data-theme="dark"] .table-wrapper {
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .role-btn {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+
+[data-theme="dark"] .toast {
+  background: var(--bg-card);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .modal-overlay {
+  background: rgba(0,0,0,.7);
+}
+
+[data-theme="dark"] .page-header h1,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3,
+[data-theme="dark"] h4 {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .card-header {
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .modal-footer {
+  border-color: var(--border);
+}
+
+[data-theme="dark"] .login-page {
+  background: linear-gradient(135deg, #0d1520 0%, #1a2332 100%);
+}
+
+/* Smooth global transition for dark mode toggle */
+*, *::before, *::after {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+/* Override for animations that should not be affected by color transition */
+.spinner, .activity-status .dot, .risk-bar-fill, .progress-bar-inner {
+  transition: none;
+}

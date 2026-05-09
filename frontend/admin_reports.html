@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports — Insider Sentinel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dark-mode.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a href="/admin" style="display:flex;align-items:center;gap:.6rem;color:var(--white);text-decoration:none">
+        <div class="brand-icon">🛡️</div>
+        <span class="brand-name">Insider Sentinel</span>
+      </a>
+    </div>
+    <div class="navbar-actions">
+      <button class="dark-mode-toggle" data-toggle-dark title="Toggle dark mode">
+        <span class="dark-mode-icon">🌙</span>
+      </button>
+      <a href="/admin" class="btn btn-sm btn-secondary">← Dashboard</a>
+      <button class="btn btn-sm btn-danger" data-logout>Logout</button>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Admin Panel</div>
+    <ul class="sidebar-nav">
+      <li><a href="/admin"><span class="nav-icon">📊</span> Dashboard</a></li>
+      <li><a href="/admin/reports" class="active"><span class="nav-icon">📋</span> Reports</a></li>
+    </ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" style="margin-top:64px">
+    <div class="page-header" style="margin-top:0">
+      <h1>📋 Report Generator</h1>
+      <p>Generate and download custom security reports</p>
+    </div>
+
+    <div class="section-grid">
+      <!-- Report Form -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Generate Report</span></div>
+
+        <form id="reportForm">
+          <div class="form-group">
+            <label class="form-label">Report Type</label>
+            <select class="form-control" id="reportType">
+              <option value="system_overview">System Overview</option>
+              <option value="employee_risk_profile">Employee Risk Profile</option>
+              <option value="department_summary">Department Summary</option>
+              <option value="daily_activity">Daily Activity Log</option>
+            </select>
+          </div>
+
+          <div class="form-row" id="dateRangeFields">
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input type="date" class="form-control" id="startDate">
+            </div>
+            <div class="form-group">
+              <label class="form-label">End Date</label>
+              <input type="date" class="form-control" id="endDate">
+            </div>
+          </div>
+
+          <div class="form-group" id="empIdField" style="display:none">
+            <label class="form-label">Employee ID</label>
+            <input type="number" class="form-control" id="employeeId" placeholder="e.g. 3">
+          </div>
+
+          <div class="form-group" id="deptField" style="display:none">
+            <label class="form-label">Department (optional)</label>
+            <input type="text" class="form-control" id="department" placeholder="e.g. Engineering">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="generateBtn">
+            📊 Generate Report
+          </button>
+        </form>
+      </div>
+
+      <!-- Available Report Types -->
+      <div class="card">
+        <div class="card-header"><span class="card-title">Available Report Types</span></div>
+        <div>
+          <div class="task-item">
+            <span style="font-size:1.3rem">🧑‍💼</span>
+            <div style="flex:1">
+              <div style="font-weight:600">Employee Risk Profile</div>
+              <div style="font-size:.82rem;color:var(--text-muted)">Detailed risk breakdown and activity history for a single employee. Requires Employee ID.</div>
+            </div>
+          </div>
+          <div class="task-item">
+            <span style="font-size:1.3rem">🏢</span>
+            <div style="flex:1">
+              <div style="font-weight:600">Department Summary</div>
+              <div style="font-size:.82rem;color:var(--text-muted)">Aggregate risk statistics grouped by department.</div>
+            </div>
+          </div>
+          <div class="task-item">
+            <span style="font-size:1.3rem">📅</span>
+            <div style="flex:1">
+              <div style="font-weight:600">Daily Activity Log</div>
+              <div style="font-size:.82rem;color:var(--text-muted)">All system activity for a selected date range.</div>
+            </div>
+          </div>
+          <div class="task-item">
+            <span style="font-size:1.3rem">🌐</span>
+            <div style="flex:1">
+              <div style="font-weight:600">System Overview</div>
+              <div style="font-size:.82rem;color:var(--text-muted)">High-level stats, all department stats, and recent activities.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Output -->
+    <div class="card" id="reportOutput" style="display:none">
+      <!-- Filled by JS -->
+    </div>
+
+  </main>
+
+  <script src="/js/app.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      AdminReports.init();
+
+      // Show/hide conditional fields based on report type
+      const reportType = document.getElementById('reportType');
+      const empIdField = document.getElementById('empIdField');
+      const deptField  = document.getElementById('deptField');
+
+      reportType.addEventListener('change', () => {
+        const val = reportType.value;
+        empIdField.style.display = val === 'employee_risk_profile' ? 'block' : 'none';
+        deptField.style.display  = val === 'department_summary'     ? 'block' : 'none';
+      });
+
+      // Set default date range (last 7 days)
+      const today = new Date().toISOString().split('T')[0];
+      const week  = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+      document.getElementById('startDate').value = week;
+      document.getElementById('endDate').value   = today;
+    });
+  </script>
+</body>
+</html>

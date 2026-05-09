@@ -1,0 +1,165 @@
+/* ============================================================
+   Insider Sentinel — Responsive Stylesheet
+   Breakpoints: mobile (< 640px), tablet (< 1024px), desktop
+   ============================================================ */
+
+/* -- Tablet ------------------------------------------------- */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 950;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main-content {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+
+  .section-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-grid.cols-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .profile-actions {
+    margin-left: 0;
+    margin-top: 1rem;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* -- Mobile -------------------------------------------------- */
+@media (max-width: 640px) {
+  html { font-size: 15px; }
+
+  .navbar {
+    padding: 0 1rem;
+  }
+
+  .navbar-brand span.brand-name {
+    display: none;
+  }
+
+  .main-content {
+    padding: 1rem;
+  }
+
+  .page-header { margin-top: 72px; }
+  .page-header h1 { font-size: 1.3rem; }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .stat-value { font-size: 1.6rem; }
+
+  .section-grid.cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card {
+    padding: 1.75rem 1.25rem;
+  }
+
+  .login-role-selector {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-bar .form-control {
+    max-width: 100%;
+  }
+
+  .table-wrapper {
+    font-size: 0.82rem;
+  }
+
+  thead th, tbody td {
+    padding: 0.7rem 0.6rem;
+  }
+
+  .table-actions {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .table-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal { padding: 1.5rem 1.2rem; }
+
+  .chat-container { height: 320px; }
+
+  .profile-header { gap: 1rem; }
+  .profile-avatar  { width: 56px; height: 56px; font-size: 1.4rem; }
+
+  .btn-lg { padding: 0.65rem 1.25rem; }
+
+  .navbar-user .user-name { display: none; }
+
+  .toast { min-width: auto; max-width: calc(100vw - 3rem); }
+
+  .toast-container {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+  }
+
+  .progress-label { width: 100px; font-size: 0.78rem; }
+
+  .browser-widget { font-size: 0.85rem; }
+  .browser-content { padding: 1rem; min-height: 140px; }
+}
+
+/* -- Small mobile ------------------------------------------- */
+@media (max-width: 400px) {
+  .stats-grid { grid-template-columns: 1fr; }
+
+  .login-role-selector { grid-template-columns: 1fr 1fr; }
+
+  .login-card { padding: 1.25rem 1rem; }
+}
+
+/* -- Large desktop ------------------------------------------ */
+@media (min-width: 1440px) {
+  .container { max-width: 1400px; }
+
+  .stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* -- Print styles ------------------------------------------- */
+@media print {
+  .sidebar, .navbar, .navbar-actions, .toast-container,
+  .modal-overlay, .btn, .filter-bar, .chat-container { display: none !important; }
+
+  .main-content { margin-left: 0 !important; padding: 0 !important; }
+  .page-header  { margin-top: 0 !important; }
+
+  body { background: white !important; color: black !important; }
+
+  .card, .stat-card { border: 1px solid #ccc !important; box-shadow: none !important; }
+
+  table { font-size: 11px; }
+  thead th { background: #eee !important; color: #333 !important; }
+}

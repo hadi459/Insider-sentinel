@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Insider Sentinel</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dark-mode.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <div class="brand-icon">🛡️</div>
+      <span class="brand-name">Insider Sentinel</span>
+    </div>
+    <div class="navbar-actions">
+      <button class="dark-mode-toggle" data-toggle-dark title="Toggle dark mode">
+        <span class="dark-mode-icon">🌙</span>
+      </button>
+      <div class="navbar-user">
+        <div class="avatar navbar-avatar">A</div>
+        <span class="navbar-user-name user-name">Admin</span>
+      </div>
+      <button class="btn btn-sm btn-danger" data-logout>Logout</button>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section-label">Admin Panel</div>
+    <ul class="sidebar-nav">
+      <li><a href="/admin" class="active"><span class="nav-icon">📊</span> Dashboard</a></li>
+      <li><a href="/admin/reports"><span class="nav-icon">📋</span> Reports</a></li>
+    </ul>
+    <div class="sidebar-section-label" style="margin-top:1.5rem">Monitoring</div>
+    <ul class="sidebar-nav" id="empSidebarLinks"></ul>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" style="margin-top:64px">
+    <div class="page-header" style="margin-top:0">
+      <div class="d-flex align-center justify-between">
+        <div>
+          <h1>Security Dashboard</h1>
+          <p>Real-time employee behavioral risk overview</p>
+        </div>
+        <button class="btn btn-outline-primary" id="refreshBtn">🔄 Refresh</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">👥</div>
+        <div class="stat-body">
+          <div class="stat-value" id="statTotal">—</div>
+          <div class="stat-label">Total Employees</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">⚠️</div>
+        <div class="stat-body">
+          <div class="stat-value" id="statHighRisk">—</div>
+          <div class="stat-label">High-Risk Employees</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">🟢</div>
+        <div class="stat-body">
+          <div class="stat-value" id="statSessions">—</div>
+          <div class="stat-label">Active Sessions</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon yellow">🔒</div>
+        <div class="stat-body">
+          <div class="stat-value" id="statBlocked">—</div>
+          <div class="stat-label">Blocked Accounts</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Risk Heatmap -->
+    <div class="card mb-3">
+      <div class="card-header">
+        <span class="card-title">Risk Heatmap</span>
+        <small class="text-muted">Behavioral risk factor matrix for all employees</small>
+      </div>
+      <div id="heatmapChart" style="min-height:280px"></div>
+    </div>
+
+    <!-- Employee Table -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">Employee Risk Overview</span>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar" style="margin-bottom:1rem">
+        <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by name or email…">
+        <select id="deptFilter" class="form-control" style="max-width:180px">
+          <option value="">All Departments</option>
+          <option>Engineering</option>
+          <option>Finance</option>
+          <option>HR</option>
+          <option>Marketing</option>
+          <option>Operations</option>
+          <option>Legal</option>
+          <option>Sales</option>
+        </select>
+        <select id="riskFilter" class="form-control" style="max-width:160px">
+          <option value="">All Risk Levels</option>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+          <option value="critical">Critical</option>
+        </select>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Department</th>
+              <th>Risk Score</th>
+              <th>Status</th>
+              <th>Last Activity</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody">
+            <tr><td colspan="6" class="text-center"><div class="spinner" style="margin:1.5rem auto"></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Plotly.js CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+  <script src="/js/app.js"></script>
+  <script src="/js/charts.js"></script>
+  <script src="/js/admin.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await AdminDashboard.init();
+
+      // Load heatmap
+      const hRes = await API.get('/admin/heatmap-data');
+      if (hRes && hRes.ok) {
+        Charts.renderHeatmap('heatmapChart', hRes.data.data.heatmap);
+      }
+
+      // Populate blocked count
+      const employees = AdminDashboard.employees;
+      const blocked = employees.filter(e => e.is_blocked).length;
+      document.getElementById('statBlocked').textContent = blocked;
+
+      // Populate sidebar quick links
+      const sidebar = document.getElementById('empSidebarLinks');
+      if (sidebar) {
+        employees.slice(0, 6).forEach(e => {
+          const li = document.createElement('li');
+          const a  = document.createElement('a');
+          a.href   = `/admin/employee/${e.user_id}`;
+          const icon = document.createElement('span');
+          icon.className = 'nav-icon';
+          icon.textContent = '👤';
+          a.appendChild(icon);
+          a.appendChild(document.createTextNode(' ' + e.name.split(' ')[0]));
+          li.appendChild(a);
+          sidebar.appendChild(li);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
