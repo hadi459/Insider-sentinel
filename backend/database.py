@@ -127,14 +127,14 @@ class Database:
             cursor = conn.execute(
                 """INSERT INTO users (name, email, password, role, department, job_title)
                    VALUES (?, ?, ?, ?, ?, ?)""",
-                (name, email, password, role, department, job_title),
+                (name, email.lower().strip(), password, role, department, job_title),
             )
             return cursor.lastrowid  # type: ignore[return-value]
 
     def get_user_by_email(self, email: str) -> Optional[Dict]:
         with self._connect() as conn:
             row = conn.execute(
-                "SELECT * FROM users WHERE email = ?", (email,)
+                "SELECT * FROM users WHERE email = ?", (email.lower().strip(),)
             ).fetchone()
         return self._row_to_dict(row)
 
@@ -425,6 +425,6 @@ class Database:
     def user_exists(self, email: str) -> bool:
         with self._connect() as conn:
             count = conn.execute(
-                "SELECT COUNT(*) FROM users WHERE email = ?", (email,)
+                "SELECT COUNT(*) FROM users WHERE email = ?", (email.lower().strip(),)
             ).fetchone()[0]
         return count > 0

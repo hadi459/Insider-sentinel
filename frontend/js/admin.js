@@ -95,7 +95,9 @@ const AdminDashboard = {
           ${
             emp.is_blocked
               ? '<span class="badge badge-blocked">Blocked</span>'
-              : '<span class="badge badge-active">Active</span>'
+              : emp.is_logged_in
+                ? '<span class="badge badge-active">Active</span>'
+                : '<span class="badge" style="background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border)">Offline</span>'
           }
         </td>
         <td style="color:var(--text-muted);font-size:.85rem">${UI.formatDate(emp.last_activity)}</td>
@@ -253,7 +255,9 @@ const AdminEmployeeProfile = {
     document.getElementById("empStatus") &&
       (document.getElementById("empStatus").innerHTML = p.is_blocked
         ? '<span class="badge badge-blocked">Blocked</span>'
-        : '<span class="badge badge-active">Active</span>');
+        : p.is_logged_in
+          ? '<span class="badge badge-active">Active</span>'
+          : '<span class="badge" style="background:var(--bg-secondary);color:var(--text-muted);border:1px solid var(--border)">Offline</span>');
     document.getElementById("empAvatarLetter") &&
       (document.getElementById("empAvatarLetter").textContent = (p.name ||
         "U")[0].toUpperCase());
