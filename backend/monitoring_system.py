@@ -206,6 +206,14 @@ class MonitoringSystem:
         activities = {e["user_id"]: self._db.get_activities_for_user(e["user_id"], limit=1)
                       for e in employees}
 
+        current_time_iso = datetime.utcnow().isoformat()
+        active_sessions = self._db.get_active_sessions()
+        # Ensure session is active and not expired
+        active_user_ids = {
+            s["user_id"] for s in active_sessions
+            if s["expires_at"] > current_time_iso
+        }
+
         result = []
         for emp in employees:
             uid = emp["user_id"]
@@ -220,6 +228,7 @@ class MonitoringSystem:
                 "department": emp["department"],
                 "job_title": emp["job_title"],
                 "is_blocked": bool(emp["is_blocked"]),
+                "is_logged_in": uid in active_user_ids,
                 "risk_score": rs.get("overall_score", 0.0),
                 "risk_level": RiskLevel.from_score(
                     rs.get("overall_score", 0.0)
@@ -236,6 +245,10 @@ class MonitoringSystem:
         rs = self._db.get_latest_risk_score(employee_id) or {}
         activities = self._db.get_activities_for_user(employee_id, limit=20)
         link_clicks = self._db.get_link_clicks_for_user(employee_id)
+        
+        current_time_iso = datetime.utcnow().isoformat()
+        active_sessions = self._db.get_active_sessions()
+        is_logged_in = any(s["user_id"] == employee_id and s["expires_at"] > current_time_iso for s in active_sessions)
 
         return {
             "user_id": employee_id,
@@ -245,6 +258,7 @@ class MonitoringSystem:
             "job_title": emp["job_title"],
             "is_active": bool(emp["is_active"]),
             "is_blocked": bool(emp["is_blocked"]),
+            "is_logged_in": is_logged_in,
             "created_at": emp["created_at"],
             "risk_profile": {
                 "overall_score": rs.get("overall_score", 0.0),

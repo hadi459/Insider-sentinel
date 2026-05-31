@@ -16,19 +16,13 @@ from backend.risk_analyzer import RiskAnalyzer
 
 
 ADMINS = [
-    {"name": "Alice Hartman",  "email": "admin1@insider.com",  "department": "IT Security",  "job_title": "Security Manager"},
-    {"name": "Bob Sinclair",   "email": "admin2@insider.com",  "department": "IT Security",  "job_title": "Security Analyst"},
+    {"name": "Abdul Hadi", "email": "AbdulHadi@insider.com", "department": "IT Security", "job_title": "Security Manager", "password": "Ben.64170is.com"},
 ]
 
 EMPLOYEES = [
-    {"name": "Carol Bennett",  "email": "emp1@company.com",  "department": "Engineering",   "job_title": "Software Engineer"},
-    {"name": "David Chen",     "email": "emp2@company.com",  "department": "Finance",       "job_title": "Financial Analyst"},
-    {"name": "Eva Martinez",   "email": "emp3@company.com",  "department": "HR",            "job_title": "HR Specialist"},
-    {"name": "Frank Thompson", "email": "emp4@company.com",  "department": "Marketing",     "job_title": "Marketing Manager"},
-    {"name": "Grace Liu",      "email": "emp5@company.com",  "department": "Operations",    "job_title": "Operations Lead"},
-    {"name": "Henry Okafor",   "email": "emp6@company.com",  "department": "Legal",         "job_title": "Legal Counsel"},
-    {"name": "Isabel Nguyen",  "email": "emp7@company.com",  "department": "Engineering",   "job_title": "DevOps Engineer"},
-    {"name": "James Walker",   "email": "emp8@company.com",  "department": "Sales",         "job_title": "Sales Executive"},
+    {"name": "Irum Andleeb", "email": "IrumAndleeb@insider.com", "department": "Engineering", "job_title": "Software Engineer", "password": "Mam123"},
+    {"name": "Hafsa Umer", "email": "HafsaUmer@insider.com", "department": "Finance", "job_title": "Financial Analyst", "password": "Hafsa123"},
+    {"name": "Sara Shahzad", "email": "SaraShahzad@insider.com", "department": "Marketing", "job_title": "Marketing Manager", "password": "Sara123"},
 ]
 
 DEFAULT_PASSWORD = "Secure@123"
@@ -89,11 +83,10 @@ def init_database(skip_if_exists: bool = False) -> None:
         print("Database already populated, skipping seed.")
         return
 
-    password_hash = User.hash_password(DEFAULT_PASSWORD)
-
     print("Seeding admins...")
     for admin in ADMINS:
         if not db.user_exists(admin["email"]):
+            password_hash = User.hash_password(admin.get("password", DEFAULT_PASSWORD))
             db.create_user(
                 name=admin["name"],
                 email=admin["email"],
@@ -109,6 +102,7 @@ def init_database(skip_if_exists: bool = False) -> None:
     print("Seeding employees...")
     for i, emp in enumerate(EMPLOYEES):
         if not db.user_exists(emp["email"]):
+            password_hash = User.hash_password(emp.get("password", DEFAULT_PASSWORD))
             uid = db.create_user(
                 name=emp["name"],
                 email=emp["email"],
@@ -133,9 +127,9 @@ def init_database(skip_if_exists: bool = False) -> None:
         print(f"  Risk calculated for {emp['name']}")
 
     print("\n✅ Database initialization complete!")
-    print("   Admin logins:    admin1@insider.com  (see DEFAULT_PASSWORD in source)")
-    print("                    admin2@insider.com  (see DEFAULT_PASSWORD in source)")
-    print("   Employee logins: emp1-emp8@company.com  (see DEFAULT_PASSWORD in source)")
+    # print("   Admin logins:    admin1@insider.com  (see DEFAULT_PASSWORD in source)")
+    # print("                    admin2@insider.com  (see DEFAULT_PASSWORD in source)")
+    # print("   Employee logins: emp1-emp8@company.com  (see DEFAULT_PASSWORD in source)")
 
 
 if __name__ == "__main__":

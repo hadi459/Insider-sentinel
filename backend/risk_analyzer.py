@@ -222,5 +222,13 @@ class RiskAnalyzer:
         ts = RiskAnalyzer._parse_ts(ts_str)
         if ts == datetime.min:
             return False
-        t = ts.time()
+        
+        # ts is parsed from UTC representation. Convert to local time before checking.
+        import datetime as dt_module
+        try:
+            ts_local = ts.replace(tzinfo=dt_module.timezone.utc).astimezone()
+            t = ts_local.time()
+        except Exception:
+            t = ts.time()
+            
         return t >= OFF_HOURS_START or t < OFF_HOURS_END
